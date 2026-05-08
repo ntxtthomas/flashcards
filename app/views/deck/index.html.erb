@@ -1,0 +1,124 @@
+<% content_for :title, "Flashcard Deck" %>
+
+<main
+	class="flashcards-page"
+	data-controller="flashcards"
+	data-flashcards-categories-value="<%= json_escape(@category_payload.to_json) %>"
+	data-flashcards-selected-category-id-value="<%= @selected_category_id %>"
+>
+	<section class="flashcards-shell">
+		<header class="flashcards-header">
+			<div>
+				<p class="eyebrow">Interview Prep</p>
+				<h1>Flashcard Trainer</h1>
+				<p class="subtitle">Pick a category, flip each card to reveal the answer, and score yourself.</p>
+			</div>
+			<div class="flashcards-actions">
+				<label class="category-picker" for="category_picker">
+					<span>Category</span>
+					<select
+						id="category_picker"
+						data-flashcards-target="categorySelect"
+						data-action="change->flashcards#changeCategory"
+					>
+						<% @categories.each do |category| %>
+							<option value="<%= category.id %>" <%= "selected" if category.id == @selected_category_id %>>
+								<%= category.name %>
+							</option>
+						<% end %>
+					</select>
+				</label>
+				<button
+					type="button"
+					class="shuffle-button"
+					data-action="click->flashcards#toggleShuffle"
+					data-flashcards-target="shuffleButton"
+					aria-label="Shuffle cards"
+				>
+					🔀 Shuffle
+				</button>
+			</div>
+		</header>
+
+		<section class="deck-stats">
+			<article>
+				<p class="label">Progress</p>
+				<p class="value" data-flashcards-target="progress">0 / 0</p>
+			</article>
+			<article>
+				<p class="label">Score</p>
+				<p class="value" data-flashcards-target="score">0%</p>
+			</article>
+		</section>
+		<section class="deck-content" data-flashcards-target="content">
+			<div class="flashcard-3d">
+				<button
+					type="button"
+					class="flashcard"
+					data-action="click->flashcards#flipCard"
+					data-flashcards-target="card"
+					aria-label="Flip flashcard"
+				>
+					<article class="face face-front" data-flashcards-target="frontFace">
+						<p class="face-label">Question</p>
+						<p data-flashcards-target="question"></p>
+						<small>Click card to reveal answer</small>
+					</article>
+					<article class="face face-back" data-flashcards-target="backFace">
+						<p class="face-label">Answer</p>
+						<p data-flashcards-target="answer"></p>
+					</article>
+				</button>
+			</div>
+
+			<section class="result-controls">
+				<p>Did you get it right?</p>
+				<div class="button-row">
+					<button
+						type="button"
+						class="result-button yes"
+						data-action="click->flashcards#markResult"
+						data-correct="true"
+						data-flashcards-target="markControls"
+						data-flashcards-correct-param="true"
+					>
+						Yes
+					</button>
+					<button
+						type="button"
+						class="result-button no"
+						data-action="click->flashcards#markResult"
+						data-correct="false"
+						data-flashcards-target="markControls"
+						data-flashcards-correct-param="false"
+					>
+						No
+					</button>
+				</div>
+			</section>
+
+			<nav class="deck-nav" aria-label="Flashcard navigation">
+				<button
+					type="button"
+					class="nav-button"
+					data-action="click->flashcards#previousCard"
+					data-flashcards-target="navPrev"
+				>
+					← Back
+				</button>
+				<button
+					type="button"
+					class="nav-button"
+					data-action="click->flashcards#nextCard"
+					data-flashcards-target="navNext"
+				>
+					Next →
+				</button>
+			</nav>
+		</section>
+
+		<section class="empty hidden" data-flashcards-target="emptyState">
+			<p>No flashcards found for this category yet.</p>
+		</section>
+	</section>
+</main>
