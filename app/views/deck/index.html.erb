@@ -6,12 +6,12 @@
 	data-flashcards-categories-value="<%= json_escape(@category_payload.to_json) %>"
 	data-flashcards-selected-category-id-value="<%= @selected_category_id %>"
 >
-	<section class="flashcards-shell">
+	<section class="flashcards-shell" data-flashcards-target="shell">
 		<header class="flashcards-header">
 			<div>
 				<p class="eyebrow">Interview Prep</p>
 				<h1>Flashcard Trainer</h1>
-				<p class="subtitle">Pick a category, flip each card to reveal the answer, and score yourself.</p>
+				<p class="subtitle" data-flashcards-target="subtitle">Pick a category, flip each card to reveal the answer, and score yourself.</p>
 			</div>
 			<div class="flashcards-actions">
 				<label class="category-picker" for="category_picker">
@@ -28,6 +28,37 @@
 						<% end %>
 					</select>
 				</label>
+
+				<div class="mode-toggle" role="tablist" aria-label="Study mode">
+					<button
+						type="button"
+						class="mode-button active"
+						data-action="click->flashcards#switchMode"
+						data-flashcards-target="modeFlashcardsButton"
+						data-flashcards-mode-param="flashcards"
+					>
+						Flashcards
+					</button>
+					<button
+						type="button"
+						class="mode-button"
+						data-action="click->flashcards#switchMode"
+						data-flashcards-target="modeQuizButton"
+						data-flashcards-mode-param="quizzes"
+					>
+						Quizzes
+					</button>
+				</div>
+
+				<label class="category-picker hidden" for="quiz_picker" data-flashcards-target="quizPickerWrap">
+					<span>Quiz</span>
+					<select
+						id="quiz_picker"
+						data-flashcards-target="quizSelect"
+						data-action="change->flashcards#changeQuiz"
+					></select>
+				</label>
+
 				<button
 					type="button"
 					class="shuffle-button"
@@ -35,7 +66,7 @@
 					data-flashcards-target="shuffleButton"
 					aria-label="Shuffle cards"
 				>
-					🔀 Shuffle
+					<span data-flashcards-target="shuffleButtonLabel">🔀 Shuffle Cards</span>
 				</button>
 			</div>
 		</header>
@@ -50,7 +81,7 @@
 				<p class="value" data-flashcards-target="score">0%</p>
 			</article>
 		</section>
-		<section class="deck-content" data-flashcards-target="content">
+		<section class="deck-content" data-flashcards-target="flashcardContent">
 			<div class="flashcard-3d">
 				<button
 					type="button"
@@ -117,8 +148,59 @@
 			</nav>
 		</section>
 
+		<section class="quiz-content hidden" data-flashcards-target="quizContent">
+			<article class="quiz-card">
+				<p class="face-label">Multiple Choice</p>
+				<p class="quiz-question" data-flashcards-target="quizQuestion"></p>
+			</article>
+
+			<section class="quiz-options" data-flashcards-target="quizOptions"></section>
+
+			<p class="quiz-feedback hidden" data-flashcards-target="quizFeedback"></p>
+			<p class="quiz-review-note hidden" data-flashcards-target="quizReviewNote"></p>
+
+			<nav class="deck-nav" aria-label="Quiz navigation">
+				<button
+					type="button"
+					class="nav-button"
+					data-action="click->flashcards#previousQuizQuestion"
+					data-flashcards-target="quizPrev"
+				>
+					← Back
+				</button>
+				<button
+					type="button"
+					class="nav-button"
+					data-action="click->flashcards#nextQuizQuestion"
+					data-flashcards-target="quizNext"
+				>
+					Next →
+				</button>
+			</nav>
+
+			<div class="quiz-actions">
+				<button
+					type="button"
+					class="result-button yes"
+					data-action="click->flashcards#finishQuiz"
+					data-flashcards-target="quizFinish"
+				>
+					Finish Quiz
+				</button>
+				<button
+					type="button"
+					class="result-button"
+					data-action="click->flashcards#restartQuiz"
+				>
+					Restart Quiz
+				</button>
+			</div>
+
+			<div class="quiz-result hidden" data-flashcards-target="quizResult"></div>
+		</section>
+
 		<section class="empty hidden" data-flashcards-target="emptyState">
-			<p>No flashcards found for this category yet.</p>
+			<p data-flashcards-target="emptyMessage">No flashcards found for this category yet.</p>
 		</section>
 	</section>
 </main>
